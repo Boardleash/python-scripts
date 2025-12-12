@@ -26,34 +26,34 @@ connection.close()
 #---------------------------------------
 
 def avgStats():
-  avg_all = round(df['weight_lbs'].mean(),1)
-  avg_legs = round(df[df['muscle_group'].str.contains('Legs')]['weight_lbs'].mean(),1)
-  avg_back = round(df[df['muscle_group'].str.contains('Back')]['weight_lbs'].mean(),1)
-  avg_chest = round(df[df['muscle_group'].str.contains('Chest')]['weight_lbs'].mean(),1)
-  avg_shoulders = round(df[df['muscle_group'].str.contains('Shoulders')]['weight_lbs'].mean(),1)
-  avg_arms = round(df[df['muscle_group'].str.contains('Arms')]['weight_lbs'].mean(),1)
+  avgAll = round(df['weight_lbs'].mean(),1)
+  avgLegs = round(df[df['muscle_group'].str.contains('Legs')]['weight_lbs'].mean(),1)
+  avgBack = round(df[df['muscle_group'].str.contains('Back')]['weight_lbs'].mean(),1)
+  avgChest = round(df[df['muscle_group'].str.contains('Chest')]['weight_lbs'].mean(),1)
+  avgShoulders = round(df[df['muscle_group'].str.contains('Shoulders')]['weight_lbs'].mean(),1)
+  avgArms = round(df[df['muscle_group'].str.contains('Arms')]['weight_lbs'].mean(),1)
 
-  print(f"The average amount of weight lifted for ALL LIFTS is {avg_all} pounds.\n"
-        f"The average amount of weight lifted for LEGS is {avg_legs} pounds.\n"
-        f"The average amount of weight lifted for BACK is {avg_back} pounds.\n"
-        f"The average amount of weight lifted for CHEST is {avg_chest} pounds.\n"
-        f"The average amount of weight lifted for SHOULDERS is {avg_shoulders} pounds.\n"
-        f"The average amount of weight lifted for ARMS is {avg_arms} pounds.")
+  print(f"The average amount of weight lifted for ALL LIFTS is {avgAll} pounds.\n"
+        f"The average amount of weight lifted for LEGS is {avgLegs} pounds.\n"
+        f"The average amount of weight lifted for BACK is {avgBack} pounds.\n"
+        f"The average amount of weight lifted for CHEST is {avgChest} pounds.\n"
+        f"The average amount of weight lifted for SHOULDERS is {avgShoulders} pounds.\n"
+        f"The average amount of weight lifted for ARMS is {avgArms} pounds.")
 
 def sumStats():
-  sum_all = round(df['weight_lbs'].sum(),1)
-  sum_legs = round(df[df['muscle_group'].str.contains('Legs')]['weight_lbs'].sum(),1)
-  sum_back = round(df[df['muscle_group'].str.contains('Back')]['weight_lbs'].sum(),1)
-  sum_chest = round(df[df['muscle_group'].str.contains('Chest')]['weight_lbs'].sum(),1)
-  sum_shoulders = round(df[df['muscle_group'].str.contains('Shoulders')]['weight_lbs'].sum(),1)
-  sum_arms = round(df[df['muscle_group'].str.contains('Arms')]['weight_lbs'].sum(),1)
+  sumAll = round(df['weight_lbs'].sum(),1)
+  sumLegs = round(df[df['muscle_group'].str.contains('Legs')]['weight_lbs'].sum(),1)
+  sumBack = round(df[df['muscle_group'].str.contains('Back')]['weight_lbs'].sum(),1)
+  sumChest = round(df[df['muscle_group'].str.contains('Chest')]['weight_lbs'].sum(),1)
+  sumShoulders = round(df[df['muscle_group'].str.contains('Shoulders')]['weight_lbs'].sum(),1)
+  sumArms = round(df[df['muscle_group'].str.contains('Arms')]['weight_lbs'].sum(),1)
 
-  print(f"The sum of ALL weight lifted is {sum_all} pounds.\n"
-        f"The sum of weight lifted for LEGS is {sum_legs} pounds.\n"
-        f"The sum of weight lifted for BACK is {sum_back} pounds.\n"
-        f"The sum of weight lifted for CHEST is {sum_chest} pounds.\n"
-        f"The sum of weight lifted for SHOULDERS is {sum_shoulders} pounds.\n"
-        f"The sum of weight lifted for ARMS is {sum_arms} pounds.")
+  print(f"The sum of ALL weight lifted is {sumAll} pounds.\n"
+        f"The sum of weight lifted for LEGS is {sumLegs} pounds.\n"
+        f"The sum of weight lifted for BACK is {sumBack} pounds.\n"
+        f"The sum of weight lifted for CHEST is {sumChest} pounds.\n"
+        f"The sum of weight lifted for SHOULDERS is {sumShoulders} pounds.\n"
+        f"The sum of weight lifted for ARMS is {sumArms} pounds.")
 
 #---- SCRIPT EXECUTION ----
 question = input("What data would you like to see (AVERAGE or TOTAL)?: ")
