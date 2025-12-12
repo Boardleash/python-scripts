@@ -37,9 +37,7 @@ def annualKnown():
         f"Using the 30% rule, you can afford ${monthly_rent} in rent a month.")
 
 #------- SCRIPT EXECUTION ----------
-print(f"Hello, I can perform some basic income calcualtions for you.\n"
-      f"In order to do this, I will ask you two questions.  Please exclude commas from your input.\n"
-      f"For example, rather than type 70,000.00, please type 70000.00.")
+print(f"Hello, I can perform some basic income calculations for you.\nYou will be prompted for responses.  Please respond appropriately.\n")
 
 question = input("Which income amount are you able to provide?:\na. Annual\nb. Hourly\nYour response: ")
 
