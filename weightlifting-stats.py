@@ -10,13 +10,14 @@
 
 import mariadb
 import pandas as pd
-import readline
+#import readline
 import sqlalchemy as db
 
 #------------------------------
 # DB Connector Using SQLAlchemy 
 #------------------------------
-engine = db.create_engine('mariadb+mariadbconnector://testuser:test@localhost:3306/fitness')
+#engine = db.create_engine('mariadb+mariadbconnector://testuser:test@localhost:3306/fitness')
+engine = db.create_engine('mariadb+mariadbconnector://testuser:test@demersal:48124/fitness')
 connection = engine.connect()
 
 #------ GENERAL DATABASE QUERY ---------
