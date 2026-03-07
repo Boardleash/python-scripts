@@ -37,11 +37,7 @@ def annualKnown():
         f"Using the 30% rule, you can afford ${monthlyRent} in rent a month.")
 
 #------- SCRIPT EXECUTION ----------
-<<<<<<< Updated upstream
 print(f"Hello, I can perform some basic income calculations for you.\nYou will be prompted for responses.  Please respond appropriately.\n")
-=======
-print(f"Hello, I can perform some basic income calcualtions for you.\n""In order to do this, I will ask you two questions.\n")
->>>>>>> Stashed changes
 
 question = input("Which income amount are you able to provide?:\na. Annual\nb. Hourly\nYour response: ")
 
