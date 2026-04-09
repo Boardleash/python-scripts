@@ -1,88 +1,195 @@
 #!/usr/bin/env python3
-
 #------------------------
 # TITLE: fish-data.py
 # AUTHOR: Boardleash (Derek)
 # DATE: Tuesday, December 9th 2025
 #----------------------------------
-
-# Python script to pull some data from a MySQL database container regarding tinned fish
-# Requires that a MySQL database is running with the appropriate data
-
+#------------------------------ DESCRIPTION ----------------------------------
+# Python script to pull data from database regarding tinned fish
+# Requires MySQL database to be online with appropriate data
+#-----------------------------------------------------------------------------
 import mysql.connector
 import pandas as pd
-import readline
 import sqlalchemy as db
 
-#------------------------------
-# DB Connector using SQLAlchemy
-#------------------------------
-
-#engine = db.create_engine('mysql+mysqlconnector://testuser:test@localhost:48124/tins')
-engine = db.create_engine('mysql+mysqlconnector://root@localhost:48124/tins')
+#--- DB Connection and Queries
+engine = db.create_engine('mysql+mysqlconnector://testuser:test@demersal: \
+  48123/tins')
+#engine = db.create_engine('mysql+mysqlconnector://testuser:test@altdem: \
+# 48123/tins')
+#engine = db.create_engine('mysql+mysqlconnector://testuser:test@atlantis: \
+# 48123/tins')
 connection = engine.connect()
-
-#--------- DB CONNECTION FAIL BLOCK ------------
-#try:
-#  connection.close()
-#  query = "select * from sardines limit 1;"
-#  test_df = pd.read_sql_query(query,connection)
-#  print(test_df)
-#except:
-#  print("Database connection is already closed.")
-
-#-------- GENERAL DATABASE QUERIES -----------------------
-anchovyQuery = "select * from anchovies;"
-mackerelQuery = "select * from mackerel;"
-sardineQuery = "select * from sardines;"
-anchovyDf = pd.read_sql_query(anchovyQuery,connection)
-mackerelDf = pd.read_sql_query(mackerelQuery,connection)
-sardineDf = pd.read_sql_query(sardineQuery,connection)
+a_query = "select * from anchovies;"
+m_query = "select * from mackerel;"
+s_query = "select * from sardines;"
+a_df = pd.read_sql_query(a_query,connection)
+m_df = pd.read_sql_query(m_query,connection)
+s_df = pd.read_sql_query(s_query,connection)
 connection.close()
-#---------------------------------------------------------
 
+#--- Anchovy Data Function
 def anchovyData():
-  '''Function for pulling data related to the anchovies table of the database.'''
-  question = input("What information are you looking for?\na. Most Expensive Tins\nb. Top Consumed Tins\nc. Other\nYour Response: ")
-  if question.lower() == "a" or question.lower() == "most expensive tins":
-    filteredDf = anchovyDf[['brand', 'base', 'cost']]
-    expensive = filteredDf[(filteredDf['cost'] > 7)].sort_values(by='cost', ascending=False).to_string(index=False)
+  '''Manipulate anchovy data from database.'''
+  q_one = input("What information are you looking for? \
+    \na. Most Expensive Tins\nb. Top Consumed Tins\nc. Other\nYour Response: ")
+  if q_one.lower() == "a" or q_one.lower() == "most expensive tins":
+    filter_df = a_df[['brand', 'base', 'cost']]
+    expensive = filter_df[(filter_df['cost'] > 7)].sort_values(by='cost', \
+      ascending=False).to_string(index=False)
     print(f"\nThe most expensive anchovy tins are as follows:\n\n{expensive}")
 
-  elif question.lower() == "b" or question.lower() == "top consumed tins":
-    filteredDf = anchovyDf[['brand', 'base', 'consumed']]
-    consumed = filteredDf[(filteredDf['consumed'] > 0)].sort_values(by='consumed', ascending=False).to_string(index=False)
+  elif q_one.lower() == "b" or q_one.lower() == "top consumed tins":
+    filter_df = a_df[['brand', 'base', 'consumed']]
+    consumed = filter_df[(filter_df['consumed'] > 0)].sort_values \
+      (by='consumed', ascending=False).to_string(index=False)
     print(f"\nThe top consumed anchovy tins are as follows:\n\n{consumed}")
 
-  elif question.lower() == "c" or question.lower() == "other":
-    newQuestion = input("Please select an option below as it pertains to the other information you are looking for?\na. Brands\nb. Bases\nc. Boneless and Skinless\nd. Anchovy Brand Sources\nYour Response: ")
+  elif q_one.lower() == "c" or q_one.lower() == "other":
+    q_two = input("Select an option below:\
+    \na. Brands\nb. Bases\nc. Boneless and Skinless\nd. Anchovy Brand Sources\
+    \nYour Response: ")
 
-    if newQuestion.lower() == "a" or newQuestion.lower() == "brands":
-      anchovyBrands = sorted(anchovyDf['brand'].unique())
-      print(f"\nThere are "+str(len(anchovyBrands))+" unique brands of anchovies that are currently in the database.\n"
-            f"The following unique brands of anchovies are being tracked in the database:\n")
-      for brand in anchovyBrands:
+    if q_two.lower() == "a" or q_two.lower() == "brands":
+      brands = sorted(a_df['brand'].unique())
+      print(f"\nThere are "+str(len(brands))+" brands of anchovies tracked.\n"
+      f"They are as follows:\n")
+      for brand in brands:
         print(brand)
 
-    elif newQuestion.lower() == "b" or newQuestion.lower() == "bases":
-      anchovyBases = sorted(anchovyDf['base'].unique())
-      print(f"\nThere are a total of "+str(len(anchovyBases))+" unique bases for anchovies that are currently in the database.\n"
-            f"The following bases for anchovies are being tracked in the database:\n")
-      for base in anchovyBases:
+    elif q_two.lower() == "b" or q_two.lower() == "bases":
+      bases = sorted(a_df['base'].unique())
+      print(f"\nThere are "+str(len(bases))+" bases of anchovies tracked.\n"
+      f"They are as follows:\n") 
+      for base in bases:
         print(base)
 
-    elif newQuestion.lower() == "c" or newQuestion.lower() == "boneless and skinless":
-      bonelessSkinless = anchovyDf[anchovyDf['boneless'].str.contains('y') | anchovyDf['skinless'].str.contains('y')]
-      bonelessBrands = sorted(bonelessSkinless['brand'].unique())
-      print(f"\nThere are a total of "+str(len(bonelessBrands))+" unique boneless/skinless anchovy options that are in the database.\n"
-            f"The following brands have a boneless/skinless option for anchovies:\n")
-      for nobones in bonelessBrands:
+    elif q_two.lower() == "c" or q_two.lower() == "boneless and skinless":
+      boneless = a_df[a_df['boneless'].str.contains('y') | \
+        a_df['skinless'].str.contains('y')]
+      bnlesbrands = sorted(boneless['brand'].unique())
+      print(f"\nThere are "+str(len(bnlesbrands))+" boneless/skinless \
+options tracked.\nThey are as follows:\n")
+      for nobones in bnlesbrands:
         print(nobones)
 
-    elif newQuestion.lower() == "d" or newQuestion.lower() == "sardine brand sources":
-      anchovySources = sorted(anchovyDf['origin'].unique())
-      print(f"\nThe anchovies tracked in this database come from the following unique locations:\n")
-      for source in anchovySources:
+    elif q_two.lower() == "d" or q_two.lower() == "sardine brand sources":
+      a_sources = sorted(a_df['origin'].unique())
+      print(f"\nThe anchovies tracked come from the following locations:\n")
+      for source in a_sources:
+        print(source)
+
+    else:
+      print("That is an invalid response.")
+      exit
+  else:
+    print("That is an invalid response.")
+    exit
+#--- Mackerel Function
+def mackerelData():
+  '''Manipulate mackerel data from database.'''
+  q_one = input("What information are you looking for? \
+    \na. Most Expensive Tins\nb. Top Consumed Tins\nc. Other\nYour Response: ")
+  if q_one.lower() == "a" or q_one.lower() == "most expensive tins":
+    filter_df = m_df[['brand', 'base', 'cost']]
+    expensive = filter_df[(filter_df['cost'] > 10)].sort_values \
+      (by='cost', ascending=False).to_string(index=False)
+    print(f"\nThe most expensive mackerel tins are as follows:\n\n{expensive}")
+
+  elif q_one.lower() == "b" or q_one.lower() == "top consumed tins":
+    filter_df = m_df[['brand', 'base', 'consumed']]
+    consumed = filter_df[(filter_df['consumed'] > 0)].sort_values \
+      (by='consumed', ascending=False).to_string(index=False)
+    print(f"\nThe top consumed mackerel tins are as follows:\n\n{consumed}")
+
+  elif q_one.lower() == "c" or q_one.lower() == "other":
+    q_two = input("Please select an option below:\na. Brands\nb. Bases \
+      \nc. Boneless and Skinless\nd. Mackerel Brand Sources\nYour Response: ")
+
+    if q_two.lower() == "a" or q_two.lower() == "brands":
+      brands = sorted(m_df['brand'].unique())
+      print(f"\nThere are "+str(len(brands))+" mackerel brands tracked.\n"
+        f"They are as follows:\n")
+      for brand in brands:
+        print(brand)
+
+    elif q_two.lower() == "b" or q_two.lower() == "bases":
+      bases = sorted(m_df['base'].unique())
+      print(f"\nThere are "+str(len(bases))+" mackerel bases tracked.\n"
+        f"They are as follows:\n")
+      for base in bases:
+        print(base)
+
+    elif q_two.lower() == "c" or q_two.lower() == "boneless and skinless":
+      boneless = m_df[m_df['boneless'].str.contains('y') | \
+        m_df['skinless'].str.contains('y')]
+      bnlesbrands = sorted(boneless['brand'].unique())
+      print(f"\nThere are "+str(len(bnlesbrands))+" boneless/skinless \
+options tracked.\nThey are as follows:\n")
+      for nobones in bnlesbrands:
+        print(nobones)
+
+    elif q_two.lower() == "d" or q_two.lower() == "mackerel brand sources":
+      sources= sorted(m_df['origin'].unique())
+      print(f"\nThe mackerel tracked come from the following locations:\n")
+      for source in sources:
+        print(source)
+
+    else:
+      print("That is an invalid response.")
+      exit
+  else:
+    print("That is an invalid response.")
+    exit
+#--- Sardine Function
+def sardineData():
+  '''Manipulate sardine data from database.'''
+  q_one = input("What information are you looking for?\
+    \na. Most Expensive Tins\nb. Top Consumed Tins\nc. Other\nYour Response: ")
+  if q_one.lower() == "a" or q_one.lower() == "most expensive tins":
+    filter_df = s_df[['brand', 'base', 'cost']]
+    expensive = filter_df[(filter_df['cost'] > 11)].sort_values \
+      (by='cost', ascending=False).to_string(index=False)
+    print(f"\nThe most expensive sardine tins are as follows:\n\n{expensive}")
+
+  elif q_one.lower() == "b" or q_one.lower() == "top consumed tins":
+    filter_df = s_df[['brand', 'base', 'consumed']]
+    consumed = filter_df[(filter_df['consumed'] > 7)].sort_values \
+      (by='consumed', ascending=False).to_string(index=False)
+    print(f"\nThe top consumed sardine tins are as follows:\n\n{consumed}")
+
+  elif q_one.lower() == "c" or q_one.lower() == "other":
+    q_two = input("Select an option below: \
+      \na. Brands\nb. Bases\nc. Boneless and Skinless \
+      \nd. Sardine Brand Sources\nYour Response: ")
+
+    if q_two.lower() == "a" or q_two.lower() == "brands":
+      brands = sorted(s_df['brand'].unique())
+      print(f"\nThere are "+str(len(brands))+" sardine brands tracked.\n"
+        f"They are as follows:\n")
+      for brand in brands:
+        print(brand)
+
+    elif q_two.lower() == "b" or q_two.lower() == "bases":
+      bases = sorted(s_df['base'].unique())
+      print(f"\nThere are "+str(len(bases))+" sardine bases tracked.\n"
+        f"They are as follows:\n")
+      for base in bases:
+        print(base)
+
+    elif q_two.lower() == "c" or q_two.lower() == "boneless and skinless":
+      boneless = s_df[s_df['boneless'].str.contains('y') | \
+        s_df['skinless'].str.contains('y')]
+      bnlesbrands = sorted(boneless['brand'].unique())
+      print(f"\nThere are "+str(len(bnlesbrands))+" boneless/skinless \
+options tracked.\nThey are as follows:\n")
+      for nobones in bnlesbrands:
+        print(nobones)
+
+    elif q_two.lower() == "d" or q_two.lower() == "sardine brand sources":
+      sources = sorted(s_df['origin'].unique())
+      print(f"\nThe sardines tracked come from the following locations:\n")
+      for source in sources:
         print(source)
 
     else:
@@ -92,114 +199,16 @@ def anchovyData():
     print("That is an invalid response.")
     exit
 
-def mackerelData():
-  '''Function for pulling data from the mackerel table in the database.'''
-  question = input("What information are you looking for?\na. Most Expensive Tins\nb. Top Consumed Tins\nc. Other\nYour Response: ")
-  if question.lower() == "a" or question.lower() == "most expensive tins":
-    filteredDf = mackerelDf[['brand', 'base', 'cost']]
-    expensive = filteredDf[(filteredDf['cost'] > 7)].sort_values(by='cost', ascending=False).to_string(index=False)
-    print(f"\nThe most expensive mackerel tins are as follows:\n\n{expensive}")
-
-  elif question.lower() == "b" or question.lower() == "top consumed tins":
-    filteredDf = mackerelDf[['brand', 'base', 'consumed']]
-    consumed = filteredDf[(filteredDf['consumed'] > 0)].sort_values(by='consumed', ascending=False).to_string(index=False)
-    print(f"\nThe top consumed mackerel tins are as follows:\n\n{consumed}")
-
-  elif question.lower() == "c" or question.lower() == "other":
-    newQuestion = input("Please select an option below as it pertains to the other information you are looking for?\na. Brands\nb. Bases\nc. Boneless and Skinless\nd. Mackerel Brand Sources\nYour Response: ")
-
-    if newQuestion.lower() == "a" or newQuestion.lower() == "brands":
-      mackerelBrands= sorted(mackerelDf['brand'].unique())
-      print(f"\nThere are "+str(len(mackerelBrands))+" unique brands of mackerel that are currently in the database.\n"
-            f"The following unique brands of mackerel are being tracked in the database:\n")
-      for brand in mackerelBrands:
-        print(brand)
-
-    elif newQuestion.lower() == "b" or newQuestion.lower() == "bases":
-      mackerelBases = sorted(mackerelDf['base'].unique())
-      print(f"\nThere are a total of "+str(len(mackerelBases))+" unique bases for mackerel that are currently in the database.\n"
-            f"The following bases for mackerel are being tracked in the database:\n")
-      for base in mackerelBases:
-        print(base)
-
-    elif newQuestion.lower() == "c" or newQuestion.lower() == "boneless and skinless":
-      bonelessSkinless = mackerelDf[mackerelDf['boneless'].str.contains('y') | mackerelDf['skinless'].str.contains('y')]
-      bonelessBrands = sorted(bonelessSkinless['brand'].unique())
-      print(f"\nThere are a total of "+str(len(bonelessBrands))+" unique boneless/skinless options for mackerel that are in the database.\n"
-            f"The following brands have a boneless/skinless option for mackerel:\n")
-      for nobones in bonelessBrands:
-        print(nobones)
-
-    elif newQuestion.lower() == "d" or newQuestion.lower() == "mackerel brand sources":
-      mackerelSources= sorted(mackerelDf['origin'].unique())
-      print(f"\nThe mackerel tracked in this database come from the following unique locations:\n")
-      for source in mackerelSources:
-        print(source)
-
-    else:
-      print("That is an invalid response.")
-      exit
-
-def sardineData():
-  '''Function for pulling data from the sardine table in the database.'''
-  question = input("What information are you looking for?\na. Most Expensive Tins\nb. Top Consumed Tins\nc. Other\nYour Response: ")
-  if question.lower() == "a" or question.lower() == "most expensive tins":
-    filteredDf = sardineDf[['brand', 'base', 'cost']]
-    expensive = filteredDf[(filteredDf['cost'] > 10)].sort_values(by='cost', ascending=False).to_string(index=False)
-    print(f"\nThe most expensive sardine tins are as follows:\n\n{expensive}")
-
-  elif question.lower() == "b" or question.lower() == "top consumed tins":
-    filteredDf = sardineDf[['brand', 'base', 'consumed']]
-    consumed = filteredDf[(filteredDf['consumed'] > 7)].sort_values(by='consumed', ascending=False).to_string(index=False)
-    print(f"\nThe top consumed sardine tins are as follows:\n\n{consumed}")
-
-  elif question.lower() == "c" or question.lower() == "other":
-    newQuestion = input("Please select an option below as it pertains to the other information you are looking for?\na. Brands\nb. Bases\nc. Boneless and Skinless\nd. Sardine Brand Sources\nYour Response: ")
-
-    if newQuestion.lower() == "a" or newQuestion.lower() == "brands":
-      sardineBrands = sorted(sardineDf['brand'].unique())
-      print(f"\nThere are "+str(len(sardineBrands))+" unique sardine brands that are currently in the database.\n"
-            f"The following unique sardine brands are being tracked in the database:\n")
-      for brand in sardineBrands:
-        print(brand)
-
-    elif newQuestion.lower() == "b" or newQuestion.lower() == "bases":
-      sardineBases = sorted(sardineDf['base'].unique())
-      print(f"\nThere are a total of "+str(len(sardineBases))+" unique sardine bases that are currently in the database.\n"
-            f"The following sardine bases are being tracked in the database:\n")
-      for base in sardineBases:
-        print(base)
-
-    elif newQuestion.lower() == "c" or newQuestion.lower() == "boneless and skinless":
-      bonelessSkinless = sardineDf[sardineDf['boneless'].str.contains('y') | sardineDf['skinless'].str.contains('y')]
-      bonelessBrands = sorted(bonelessSkinless['brand'].unique())
-      print(f"\nThere are a total of "+str(len(bonelessBrands))+" unique boneless/skinless options for sardines that are in the database.\n"
-            f"The following brands have a boneless/skinless option for sardines:\n")
-      for nobones in bonelessBrands:
-        print(nobones)
-
-    elif newQuestion.lower() == "d" or newQuestion.lower() == "sardine brand sources":
-      sardineSources = sorted(sardineDf['origin'].unique())
-      print(f"\nThe sardines tracked in this database come from the following unique locations:\n")
-      for source in sardineSources:
-        print(source)
-
-    else:
-      print("That is an invalid response.")
-      exit
-
-#--------------
-# Main Function 
-#--------------
-
+#--- Main Function 
 def fishData():
   '''Main function for full script execution.'''
-  question = input("Which type of fish are you looking for information on?\na. Anchovies\nb. Mackerel\nc. Sardines\nYour Response: ")
-  if question.lower() == "a" or question.lower() == "anchovies":
+  q_one = input("Which type of fish are you looking for information on? \
+    \na. Anchovies\nb. Mackerel\nc. Sardines\nYour Response: ")
+  if q_one.lower() == "a" or q_one.lower() == "anchovies":
     anchovyData()
-  elif question.lower() == "b" or question.lower() == "mackerel":
+  elif q_one.lower() == "b" or q_one.lower() == "mackerel":
     mackerelData()
-  elif question.lower() == "c" or question.lower() == "sardines":
+  elif q_one.lower() == "c" or q_one.lower() == "sardines":
     sardineData()
   else:
     print("That is not a valid response.")
