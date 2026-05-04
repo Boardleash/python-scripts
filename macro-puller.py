@@ -81,11 +81,11 @@ def dataPlot():
   pie_percentage = '%1.1f%%'
 
   #--- VARIABLES (for either option)
-  d_one = df['protein'].tolist()
-  d_two = df['carbs'].tolist()
-  d_three = df['fat'].tolist()
-  d_four= df['calories'].tolist()
-  d_five = pd.to_datetime(df['date']).dt.strftime('%a-%b-%d').tolist()
+  protein = df['protein'].tolist()
+  carbs = df['carbs'].tolist()
+  fat = df['fat'].tolist()
+  calories = df['calories'].tolist()
+  date = pd.to_datetime(df['date']).dt.strftime('%a-%b-%d').tolist()
 
   #--- MONTH GRAPH 
   if timeframe.lower() == 'm':
@@ -93,7 +93,13 @@ def dataPlot():
     month = month_object.strftime('%B')
     fig.suptitle(f"{month} Monthly Nutrient Metrics")
 
-    macros = [d_one[0],d_two[0],d_three[0]]
+    #--- Monthly Sums (for numbers collection)
+    print(f'Sum of {month} CALORIES consumed: {calories}')
+    print(f'Sum of {month} PROTEIN consumed for the month: {protein}')
+    print(f'Sum of {month} CARBS consumed: {carbs}')
+    print(f'Sum of {month} FAT consumed: {fat}')
+
+    macros = [protein[0],carbs[0],fat[0]]
     pie_labels = ['Protein','Carbohydrates','Fat']
     pie_colors = plt.get_cmap('Blues')(np.linspace(0.3,1,num=3))
 
@@ -103,13 +109,14 @@ def dataPlot():
     ax1.set_title('Macros')
 
     #--- BAR CHART
-    ax2.bar(d_four,height=d_four,label='Calories',color='r')
+    ax2.bar(calories,height=calories,label='Calories',color='r')
     ax2.set_title('Calories')
     ax2.set_xlabel('Date')
     ax2.set_ylabel('Consumed (in kcal)')
 
     plt.tight_layout()
     plt.show()
+
 
   #--- WEEK GRAPH
   elif timeframe.lower() == 'w':
@@ -125,7 +132,7 @@ def dataPlot():
     pieOne_colors = plt.get_cmap('Reds')(np.linspace(0.3,1,num=3))
     pieTwo_colors = plt.get_cmap('Purples')(np.linspace(0.3,1,num=7))
     w = 0.2
-    x = np.arange(len(d_five))
+    x = np.arange(len(date))
     
     #--- PIE CHART SUBPLOT
     ax[0,0].pie(total_macros,colors=pieOne_colors,labels=pieOne_labels, \
@@ -133,29 +140,30 @@ def dataPlot():
     ax[0,0].set_title("Total Week Macros")
 
     #--- BAR CHART SUBPLOT (DAILY MACROS FOR SELECTED WEEK)
-    ax[0,1].bar(x,d_one,w,label='Protein',color='Red')
-    ax[0,1].bar(x+w,d_two,w,label='Carbs',color='Green')
-    ax[0,1].bar(x-w,d_three,w,label='Fat',color='Blue')
+    ax[0,1].bar(x,protein,w,label='Protein',color='Red')
+    ax[0,1].bar(x+w,carbs,w,label='Carbs',color='Green')
+    ax[0,1].bar(x-w,fat,w,label='Fat',color='Blue')
     ax[0,1].set_title('Macros')
     ax[0,1].set_xlabel('Date')
-    ax[0,1].set_xticks(x,d_five)
+    ax[0,1].set_xticks(x,date)
     ax[0,1].set_ylabel("Consumed (in grams)")
     ax[0,1].legend(fontsize='6',loc='best')
     
     #--- BAR CHART SUBPLOT (DAILY CALORIES FOR SELECTED WEEK)
-    ax[1,0].bar(x,d_four,w,label='Calories',color='Orange')
+    ax[1,0].bar(x,calories,w,label='Calories',color='Orange')
     ax[1,0].set_title('Calories')
     ax[1,0].set_xlabel('Date')
-    ax[1,0].set_xticks(x,d_five)
+    ax[1,0].set_xticks(x,date)
     ax[1,0].set_ylabel("Consumed (in kcal)")
 
     #--- PIE CHART SUBPLOT (DAILY CALORIES FOR SELECTED WEEK)
-    ax[1,1].pie(d_four,colors=pieTwo_colors,labels=d_five, \
+    ax[1,1].pie(calories,colors=pieTwo_colors,labels=date, \
                autopct=pie_percentage,textprops={'fontsize':6})
     ax[1,1].set_title("Daily Calorie Totals")
 
     plt.tight_layout()
     plt.show()
+
 #---------------------------
 # Plot and Present the Graph  
 #---------------------------
